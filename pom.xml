@@ -27,7 +27,10 @@
         <spring.boot.version>2.3.3.RELEASE</spring.boot.version>
         <spring.cloud.version>Hoxton.SR8</spring.cloud.version>
         <alibaba.cloud.version>2.2.1.RELEASE</alibaba.cloud.version>
+        <mybatisplus.boot.starter.version>3.5.2</mybatisplus.boot.starter.version>
+        <mysql.connector.java.version>5.1.47</mysql.connector.java.version>
 
+        <lombok.version>1.16.18</lombok.version>
         <commons.lang3.version>3.9</commons.lang3.version>
         <commons.codec.version>1.15</commons.codec.version>
         <springfox.boot.starter.version>3.0.0</springfox.boot.starter.version>
@@ -38,6 +41,8 @@
         <skipTests>true</skipTests>
 
     </properties>
+
+
 
     <!--锁定版本-->
     <dependencyManagement>
@@ -75,6 +80,14 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatisplus.boot.starter.version}</version>
+            </dependency>
+
+            <!--数据库连接-->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.connector.java.version}</version>
             </dependency>
 
             <!--https://mvnrepository.com/artifact/org.projectlombok/lombok/1.18.16-->
@@ -82,7 +95,8 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <scope>provided</scope>
+                <version>${lombok.version}</version>
+                <!--<scope>provided</scope>-->
             </dependency>
 
 
