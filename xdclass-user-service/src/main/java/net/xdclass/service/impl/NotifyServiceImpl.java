@@ -52,7 +52,13 @@ public class NotifyServiceImpl implements NotifyService {
      */
     private static final String CONTENT = "您的验证码是%s,有效时间是60秒,打死也不要告诉任何人";
 
-
+    /**
+     * 发送验证码
+     *
+     * @param sendCodeEnum
+     * @param to
+     * @return
+     */
     @Override
     public JsonData sendCode(SendCodeEnum sendCodeEnum, String to) {
 
@@ -84,5 +90,31 @@ public class NotifyServiceImpl implements NotifyService {
         }
 
         return JsonData.buildResult(BizCodeEnum.CODE_TO_ERROR);
+    }
+
+    /**
+     * 校验验证码
+     *
+     * @param sendCodeEnum
+     * @param to
+     * @param code
+     * @return
+     */
+    @Override
+    public boolean checkCode(SendCodeEnum sendCodeEnum, String to, String code) {
+        String cacheKey = String.format(CacheKey.CHECK_CODE_KEY, sendCodeEnum.name(), to);
+
+        Object cacheValue = redisTemplate.opsForValue().get(cacheKey);
+        if (cacheValue != null) {
+
+            String cacheCode = cacheValue.toString().split("_")[0];
+            if (cacheCode.equals(code)) {
+                //删除验证码
+                redisTemplate.delete(cacheKey);
+                return true;
+            }
+
+        }
+        return false;
     }
 }
