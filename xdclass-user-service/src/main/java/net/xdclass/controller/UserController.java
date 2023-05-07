@@ -1,8 +1,10 @@
 package net.xdclass.controller;
 
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import net.xdclass.request.UserLoginRequest;
 import net.xdclass.request.UserRegisterRequest;
 import net.xdclass.service.UserService;
 import net.xdclass.util.JsonData;
@@ -18,11 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
  *  前端控制器
  * </p>
  *
- * @author qyf
- * @since 2023-05-04
+ * @author 二当家小D
+ * @since 2021-01-26
  */
+@Api(tags = "用户模块")
 @RestController
-@RequestMapping("/userDO")
+@RequestMapping("/api/user/v1")
 public class UserController {
 
     @Autowired
@@ -40,5 +43,16 @@ public class UserController {
         return jsonData;
     }
 
+    /**
+     *  用户登录
+     * @param loginRequest
+     * @return
+     */
+    @ApiOperation("用户登录")
+    @PostMapping("login")
+    public JsonData login(@ApiParam("用户登录对象") @RequestBody UserLoginRequest loginRequest){
+        JsonData jsonData = userService.login(loginRequest);
+        return jsonData;
+    }
 }
 

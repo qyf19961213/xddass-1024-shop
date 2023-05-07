@@ -2,6 +2,7 @@ package net.xdclass.service;
 
 import net.xdclass.model.UserDO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import net.xdclass.request.UserLoginRequest;
 import net.xdclass.request.UserRegisterRequest;
 import net.xdclass.util.JsonData;
 
@@ -22,4 +23,10 @@ public interface UserService {
      */
     JsonData register(UserRegisterRequest registerRequest);
 
+    /**
+     * 用户登录
+     * @param loginRequest
+     * @return
+     */
+    JsonData login(UserLoginRequest loginRequest);
 }
