@@ -2,13 +2,9 @@ package net.xdclass.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-
 import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.TableId;
-
 import java.io.Serializable;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,8 +13,8 @@ import lombok.EqualsAndHashCode;
  * 电商-公司收发货地址表
  * </p>
  *
- * @author qyf
- * @since 2023-05-04
+ * @author 二当家小D
+ * @since 2021-01-26
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

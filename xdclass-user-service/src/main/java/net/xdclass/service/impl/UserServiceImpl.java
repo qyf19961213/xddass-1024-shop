@@ -4,14 +4,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import net.xdclass.enums.BizCodeEnum;
 import net.xdclass.enums.SendCodeEnum;
+import net.xdclass.interceptor.LoginInterceptor;
 import net.xdclass.mapper.UserMapper;
+import net.xdclass.model.LoginUser;
 import net.xdclass.model.UserDO;
 import net.xdclass.request.UserLoginRequest;
 import net.xdclass.request.UserRegisterRequest;
 import net.xdclass.service.NotifyService;
 import net.xdclass.service.UserService;
 import net.xdclass.util.CommonUtil;
+import net.xdclass.util.JWTUtil;
 import net.xdclass.util.JsonData;
+import net.xdclass.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +107,12 @@ public class UserServiceImpl implements UserService {
             String cryptPwd = Md5Crypt.md5Crypt(loginRequest.getPwd().getBytes(), userDO.getSecret());
             if (cryptPwd.equals(userDO.getPwd())) {
                 //登录成功，生成token TODO
-                return null;
+
+                LoginUser loginUser = LoginUser.builder().build();
+                BeanUtils.copyProperties(userDO,loginUser);
+
+                String token = JWTUtil.geneJsonWebToken(loginUser);
+                return JsonData.buildSuccess(token);
             } else {
                 return JsonData.buildResult(BizCodeEnum.ACCOUNT_PWD_ERROR);
             }
@@ -111,6 +120,16 @@ public class UserServiceImpl implements UserService {
             //未注册
             return JsonData.buildResult(BizCodeEnum.ACCOUNT_PWD_ERROR);
         }
+    }
+
+    @Override
+    public UserVO findUserDetail() {
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+
+        UserDO userDO = userMapper.selectOne(new QueryWrapper<UserDO>().eq("id",loginUser.getId()));
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(userDO,userVO);
+        return userVO;
     }
 
     /**

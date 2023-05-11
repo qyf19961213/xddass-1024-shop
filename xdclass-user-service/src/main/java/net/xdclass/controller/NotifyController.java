@@ -75,7 +75,7 @@ public class NotifyController {
             JsonData jsonData = notifyService.sendCode(SendCodeEnum.USER_REGISTER, to);
             return jsonData;
         } else {
-            return JsonData.buildResult(BizCodeEnum.CODE_CAPTCHA);
+            return JsonData.buildResult(BizCodeEnum.CODE_CAPTCHA_ERROR);
         }
     }
 

@@ -8,6 +8,7 @@ import net.xdclass.request.UserLoginRequest;
 import net.xdclass.request.UserRegisterRequest;
 import net.xdclass.service.UserService;
 import net.xdclass.util.JsonData;
+import net.xdclass.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,6 +54,13 @@ public class UserController {
     public JsonData login(@ApiParam("用户登录对象") @RequestBody UserLoginRequest loginRequest){
         JsonData jsonData = userService.login(loginRequest);
         return jsonData;
+    }
+
+    @ApiOperation("个人信息查询")
+    @PostMapping("detail")
+    public JsonData detail(){
+        UserVO userVO = userService.findUserDetail();
+        return JsonData.buildSuccess(userVO);
     }
 }
 
