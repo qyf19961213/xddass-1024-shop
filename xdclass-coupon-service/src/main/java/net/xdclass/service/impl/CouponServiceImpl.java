@@ -16,17 +16,23 @@ import net.xdclass.mapper.CouponRecordMapper;
 import net.xdclass.model.CouponDO;
 import net.xdclass.model.CouponRecordDO;
 import net.xdclass.model.LoginUser;
+import net.xdclass.request.NewUserCouponRequest;
 import net.xdclass.service.CouponService;
 import net.xdclass.util.CommonUtil;
 import net.xdclass.util.JsonData;
 import net.xdclass.vo.CouponVO;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +54,12 @@ public class CouponServiceImpl implements CouponService {
 
     @Autowired
     private CouponRecordMapper couponRecordMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
     @Override
     public Map<String, Object> pageCouponActivity(int page, int size) {
@@ -80,35 +92,74 @@ public class CouponServiceImpl implements CouponService {
      * @param category
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public JsonData addCoupon(long couponId, CouponCategoryEnum category) {
+
         LoginUser loginUser = LoginInterceptor.threadLocal.get();
 
-        CouponDO couponDO = couponMapper.selectOne(new QueryWrapper<CouponDO>()
-                .eq("id", couponId)
-                .eq("category", category.name()));
+        String lockKey = "lock:coupon:" + couponId;
+        RLock rLock = redissonClient.getLock(lockKey);
 
-        //优惠券是否可以领取
-        this.checkCoupon(couponDO, loginUser.getId());
+        //多个线程进入，会阻塞等待释放锁
+        rLock.lock();
+        log.info("领劵接口加锁成功:{}", Thread.currentThread().getId());
+        try {
+            CouponDO couponDO = couponMapper.selectOne(new QueryWrapper<CouponDO>()
+                    .eq("id", couponId)
+                    .eq("category", category.name()));
 
-        //构建领劵记录
-        CouponRecordDO couponRecordDO =new CouponRecordDO();
-        BeanUtils.copyProperties(couponDO,couponRecordDO);
-        couponRecordDO.setCreateTime(new Date());
-        couponRecordDO.setUseState(CouponStateEnum.NEW.name());
-        couponRecordDO.setUserId(loginUser.getId());
-        couponRecordDO.setUserName(loginUser.getName());
-        couponRecordDO.setCouponId(couponId);
-        couponRecordDO.setId(null);
+            //优惠券是否可以领取
+            this.checkCoupon(couponDO, loginUser.getId());
 
-        //扣减库存
-        int rows = couponMapper.reduceStock(couponId);
+            //构建领劵记录
+            CouponRecordDO couponRecordDO = new CouponRecordDO();
+            BeanUtils.copyProperties(couponDO, couponRecordDO);
+            couponRecordDO.setCreateTime(new Date());
+            couponRecordDO.setUseState(CouponStateEnum.NEW.name());
+            couponRecordDO.setUserId(loginUser.getId());
+            couponRecordDO.setUserName(loginUser.getName());
+            couponRecordDO.setCouponId(couponId);
+            couponRecordDO.setId(null);
 
-        if(rows==1){
-            couponRecordMapper.insert(couponRecordDO);
-        }else {
-            log.warn("发放优惠卷失败:{},用户:{}",couponDO,loginUser);
-            throw new BizException(BizCodeEnum.COUPON_NO_STOCK);
+            //扣减库存
+            int rows = couponMapper.reduceStock(couponId);
+            int flag = 1 / 0;
+            if (rows == 1) {
+                couponRecordMapper.insert(couponRecordDO);
+            } else {
+                log.warn("发放优惠卷失败:{},用户:{}", couponDO, loginUser);
+                throw new BizException(BizCodeEnum.COUPON_NO_STOCK);
+            }
+        } finally {
+            //解锁
+            rLock.unlock();
+            log.info("解锁成功");
+        }
+
+        return JsonData.buildSuccess();
+    }
+
+    /**
+     * 新用户注册发放优惠券
+     *
+     * @param newUserCouponRequest
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public JsonData initNewUserCoupon(NewUserCouponRequest newUserCouponRequest) {
+        LoginUser loginUser = new LoginUser();
+        loginUser.setId(newUserCouponRequest.getUserId());
+        loginUser.setName(newUserCouponRequest.getName());
+        LoginInterceptor.threadLocal.set(loginUser);
+
+        //查询用户有哪些优惠劵
+        List<CouponDO> couponDOList = couponMapper.selectList(new QueryWrapper<CouponDO>()
+                .eq("category", CouponCategoryEnum.NEW_USER.name()));
+        for(CouponDO couponDO : couponDOList){
+            //幂等操作，调用需要加锁
+            this.addCoupon(couponDO.getId(),CouponCategoryEnum.NEW_USER);
         }
         return JsonData.buildSuccess();
     }

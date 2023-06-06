@@ -1,16 +1,24 @@
 package net.xdclass.service;
 
-import net.xdclass.model.CouponRecordDO;
-import com.baomidou.mybatisplus.extension.service.IService;
 
-/**
- * <p>
- *  服务类
- * </p>
- *
- * @author qyf
- * @since 2023-05-11
- */
-public interface CouponRecordService extends IService<CouponRecordDO> {
+import net.xdclass.vo.CouponRecordVO;
 
+import java.util.Map;
+
+public interface CouponRecordService {
+
+    /**
+     * 分页查询领劵记录
+     * @param page
+     * @param size
+     * @return
+     */
+    Map<String,Object> page(int page, int size);
+
+    /**
+     * 根据id查询详情
+     * @param recordId
+     * @return
+     */
+    CouponRecordVO findById(long recordId);
 }
