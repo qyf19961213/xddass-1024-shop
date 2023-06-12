@@ -11,11 +11,11 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
- * @author qyf
- * @since 2023-06-06
+ * @author 二当家小D
+ * @since 2021-02-19
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -24,7 +24,7 @@ public class ProductDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-      @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
@@ -45,12 +45,12 @@ public class ProductDO implements Serializable {
     /**
      * 老价格
      */
-    private BigDecimal oldPrice;
+    private BigDecimal oldAmount;
 
     /**
      * 新价格
      */
-    private BigDecimal price;
+    private BigDecimal amount;
 
     /**
      * 库存

@@ -2,6 +2,9 @@ package net.xdclass.service;
 
 import net.xdclass.model.BannerDO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import net.xdclass.vo.BannerVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -11,6 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author qyf
  * @since 2023-06-06
  */
-public interface BannerService extends IService<BannerDO> {
-
+public interface BannerService {
+    List<BannerVO> list();
 }
