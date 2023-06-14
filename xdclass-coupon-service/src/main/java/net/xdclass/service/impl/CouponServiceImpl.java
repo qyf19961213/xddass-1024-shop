@@ -124,7 +124,6 @@ public class CouponServiceImpl implements CouponService {
 
             //扣减库存
             int rows = couponMapper.reduceStock(couponId);
-            int flag = 1 / 0;
             if (rows == 1) {
                 couponRecordMapper.insert(couponRecordDO);
             } else {

@@ -1,0 +1,13 @@
+net\xdclass\service\ProductOrderItemService.class
+net\xdclass\OrderApplication.class
+net\xdclass\config\InterceptorConfig.class
+net\xdclass\model\ProductOrderDO.class
+net\xdclass\service\impl\ProductOrderServiceImpl.class
+net\xdclass\controller\ProductOrderItemController.class
+net\xdclass\model\ProductOrderItemDO.class
+net\xdclass\service\impl\ProductOrderItemServiceImpl.class
+net\xdclass\mapper\ProductOrderMapper.class
+net\xdclass\service\ProductOrderService.class
+net\xdclass\request\ConfirmOrderRequest.class
+net\xdclass\controller\ProductOrderController.class
+net\xdclass\mapper\ProductOrderItemMapper.class
