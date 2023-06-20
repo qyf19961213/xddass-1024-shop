@@ -7,7 +7,7 @@ import net.xdclass.util.JsonData;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author qyf
@@ -17,8 +17,17 @@ public interface ProductOrderService extends IService<ProductOrderDO> {
 
     /**
      * 创建订单
+     *
      * @param orderRequest
      * @return
      */
     JsonData confirmOrder(ConfirmOrderRequest orderRequest);
+
+    /**
+     * 查询订单状态
+     *
+     * @param outTradeNo
+     * @return
+     */
+    String queryProductOrderState(String outTradeNo);
 }
