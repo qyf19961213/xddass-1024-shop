@@ -76,5 +76,13 @@ public class CouponController {
 
         return jsonData;
     }
+
+    @GetMapping("/test")
+    public JsonData test( ){
+
+        JsonData jsonData = couponService.test();
+
+        return jsonData;
+    }
 }
 

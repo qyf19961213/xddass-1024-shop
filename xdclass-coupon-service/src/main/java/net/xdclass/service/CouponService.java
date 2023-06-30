@@ -30,4 +30,5 @@ public interface CouponService {
      * @return
      */
     JsonData initNewUserCoupon(NewUserCouponRequest newUserCouponRequest);
+
 }

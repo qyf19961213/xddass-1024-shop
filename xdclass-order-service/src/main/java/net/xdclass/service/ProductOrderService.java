@@ -30,4 +30,5 @@ public interface ProductOrderService extends IService<ProductOrderDO> {
      * @return
      */
     String queryProductOrderState(String outTradeNo);
+
 }

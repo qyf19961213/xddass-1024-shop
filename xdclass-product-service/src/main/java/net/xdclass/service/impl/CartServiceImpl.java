@@ -126,6 +126,24 @@ public class CartServiceImpl implements CartService {
         mycart.put(cartItemRequest.getProductId(),JSON.toJSONString(cartItemVO));
     }
 
+    @Override
+    public List<CartItemVO> confirmOrderCartItems(List<Long> productIdList) {
+
+        //获取全部购物车的购物项
+        List<CartItemVO> cartItemVOList = buildCartItem(true);
+
+        //根据需要的商品id进行过滤，并清空对应的购物项
+        List<CartItemVO> resultList = cartItemVOList.stream().filter(obj->{
+
+            if(productIdList.contains(obj.getProductId())){
+                this.deleteItem(obj.getProductId());
+                return true;
+            }
+            return false;
+        }).collect(Collectors.toList());
+        return resultList;
+    }
+
 
     @Override
     public CartVO getMyCart() {

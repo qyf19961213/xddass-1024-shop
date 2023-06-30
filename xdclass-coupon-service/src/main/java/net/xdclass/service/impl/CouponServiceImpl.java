@@ -156,9 +156,9 @@ public class CouponServiceImpl implements CouponService {
         //查询用户有哪些优惠劵
         List<CouponDO> couponDOList = couponMapper.selectList(new QueryWrapper<CouponDO>()
                 .eq("category", CouponCategoryEnum.NEW_USER.name()));
-        for(CouponDO couponDO : couponDOList){
+        for (CouponDO couponDO : couponDOList) {
             //幂等操作，调用需要加锁
-            this.addCoupon(couponDO.getId(),CouponCategoryEnum.NEW_USER);
+            this.addCoupon(couponDO.getId(), CouponCategoryEnum.NEW_USER);
         }
         return JsonData.buildSuccess();
     }
