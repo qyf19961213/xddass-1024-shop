@@ -1,5 +1,6 @@
 package net.xdclass.service;
 
+import net.xdclass.model.OrderMessage;
 import net.xdclass.model.ProductOrderDO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import net.xdclass.request.ConfirmOrderRequest;
@@ -31,4 +32,11 @@ public interface ProductOrderService extends IService<ProductOrderDO> {
      */
     String queryProductOrderState(String outTradeNo);
 
+    /**
+     * 定时关单
+     *
+     * @param orderMessage
+     * @return
+     */
+    boolean closeProductOrder(OrderMessage orderMessage);
 }

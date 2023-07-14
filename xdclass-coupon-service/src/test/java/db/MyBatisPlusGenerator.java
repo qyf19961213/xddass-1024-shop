@@ -29,7 +29,7 @@ public class MyBatisPlusGenerator {
                 .setAuthor("qyf")
                 // 生成路径，最好使用绝对路径，window路径是不一样的
                 //TODO  TODO  TODO  TODO
-                .setOutputDir("D:\\zl\\code\\coupon")
+                .setOutputDir("D:\\zl\\code\\energy")
                 // 文件覆盖
                 .setFileOverride(true)
                 // 主键策略
@@ -57,9 +57,9 @@ public class MyBatisPlusGenerator {
         dsConfig.setDbType(DbType.MYSQL)
                 .setDriverName("com.mysql.jdbc.Driver")
                 //TODO  TODO  TODO  TODO
-                .setUrl("jdbc:mysql://127.0.0.1:3306/xdclass_coupon?useUnicode=true&characterEncoding=utf-8&useSSL=false&&serverTimezone=GMT%2B8")
+                .setUrl("jdbc:mysql://192.168.3.74:3306/devops_energy?useUnicode=true&characterEncoding=utf-8&useSSL=false&&serverTimezone=GMT%2B8")
                 .setUsername("root")
-                .setPassword("root");
+                .setPassword("Yjwl#2020");
 
         //3. 策略配置globalConfiguration中
         StrategyConfig stConfig = new StrategyConfig();
@@ -77,7 +77,7 @@ public class MyBatisPlusGenerator {
 
                 // 生成的表, 支持多表一起生成，以数组形式填写
                 //TODO  TODO  TODO  TODO
-                .setInclude("coupon_task");
+                .setInclude("energy_device_electricity","energy_device_meter");
 
         //4. 包名策略配置
         PackageConfig pkConfig = new PackageConfig();
